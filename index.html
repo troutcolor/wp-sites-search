@@ -134,6 +134,9 @@ var searchPosts = function(theurl, el, count) {
 			,
 		error: function(xhr, ajaxOptions, thrownError) {
 			$('#errors').append(el + " FAIL " + thrownError + '<br>');
+			console.log("xhr "+xhr);
+			console.log("ajaxOptions "+ajaxOptions);
+			console.log("thrownError "+thrownError);
 			blogcount = blogcount - 1;
 		}
 	}); //ajax
