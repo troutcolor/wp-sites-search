@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+ <base target="_blank">
+  <title>Multi WP Blog search</title>
+  <meta name="description" content="Multi WP Blog search a bit of a test">
+  <meta name="author" content="John Johnston">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+   <style type="text/css" media="screen">
+   body{font-family: Helvetica, "MS Trebuchet", sans-serif;}
+   #sorted{padding:10px;}
+   #sorted li{padding:10px;margin-left:3em;}
+	 
+   </style>
+   
+</head>
+
+<body>
+	
+	<h1>Multi WP Blog search</h1>
+<p>This is a quick test of the <a href="http://v2.wp-api.org/">WP REST API</a> searching across multiple blogs.</p>
+<p>There is little in the way of error checking....</p>
+
+<h2>Blogs to Search</h2>
+<p>This is a bit messy, you can delete these blogs and add other ones. The blogs need to support the WP rest API and cross domain access (I think). </p> 
+<ul id="bloglist">
+	<li>http://johnjohnston.info/blog, john, <button class="del">delete</button></li>
+	<li>http://bionicteaching.com, bionicteaching, <button class="del">delete</button></li>
+	<li>http://cogdogblog.com, cogdogblog , <button class="del">delete</button></li>
+	</ul>
+	add URL: <input type="text" name="addurl" value="" id="addurl"> Name:<input type="text" name="addblogname" value="" id="addblogname"> <button onclick="addtolist();">add</button>
+
+<h2>Search</h2>
+
+<div id="searchbox">
+	<input type="text" name="search" value="" id="search"> <button id="searchbutton" onclick="searchBlogList();">Search</button>
+</div>
+<div id="posts" class="postholder">
+	<div id="errors">
+		
+	</div>
+	
+	<h3>Results</h3>
+	<ul id="sorted">
+		
+	</ul>
+</div>
+	
+ 
+ 
+<script type="text/javascript">
+
+document.getElementById("search")
+    .addEventListener("keyup", function(event) {
+    event.preventDefault();
+    if (event.keyCode == 13) {
+        document.getElementById("searchbutton").click();
+    }
+});
+
+
+var htmlresults = "";
+var thecount = 0;
+var blogcount;
+var postsArray = new Array;
+
+var searchBlogList = function() {
+	postsArray.length = 0;
+
+	$('#sorted').html('');
+	var searchterm = $('#search').val();
+	$('#posts').append('<img src="spinner-2x.gif" class="waiting">');
+	thecount = 0;
+	var optionTexts = [];
+	$("#bloglist li").each(function() {
+		optionTexts.push($(this).text())
+	});
+	blogcount = optionTexts.length;
+	for (var i = 0; i < optionTexts.length; i++) {
+		var thisBlog = optionTexts[i].split(',');
+		//console.log(thisBlog[0]);
+		u = thisBlog[0] + '/wp-json/wp/v2/posts/?search=' + searchterm;
+		//console.log(u);
+		searchPosts(u, thisBlog[1], 12);
+
+	}
+
+
+}
+
+var addtolist = function() {
+	var u = $('#addurl').val();
+	var n = $('#addblogname').val();
+	var a = $("#bloglist").append("<li>" + u + "," + n + "</li>");
+	$('#addurl').val("");
+	$('#addblogname').val("");
+
+}
+
+var searchPosts = function(theurl, el, count) {
+	//$(el).append('<img src="spinner-2x.gif" class="waiting">');
+	$.ajax({
+		url: theurl,
+
+		jsonp: "cb",
+
+		dataType: 'json',
+
+		success: function(data) {
+
+				console.log(data); //dumps the data 
+
+				$.each(data, function(index, item) {
+					// $(el).append('<a  href="' + item.link + '">' +item.title.rendered +'</a> || ' +item.date.substring(0,10) +'<br>');      
+					var newitem = new Array;
+					newitem[0] = '<a  href="' + item.link + '">' + item.title.rendered + '</a>';
+					newitem[1] = item.date.substring(0, 10);
+					newitem[2] = el;
+					postsArray.push(newitem);
+
+					if (index == count) return false; //only display 10 items
+
+				}); //each
+				$(el).find('.waiting').hide();
+				thecount++;
+				if (thecount == blogcount) {
+					sortsearch()
+				};
+
+			} //success
+			,
+		error: function(xhr, ajaxOptions, thrownError) {
+			$('#errors').append(el + " FAIL " + thrownError + '<br>');
+			blogcount = blogcount - 1;
+		}
+	}); //ajax
+}
+
+
+function sortFunction(a, b) {
+	if (a[1] < b[1]) return 1;
+	if (a[1] > b[1]) return -1;
+	return 0;
+}
+
+
+var sortsearch = function() {
+	htmlresults = "";
+	postsArray.sort(sortFunction);
+	for (var i = 0; i < postsArray.length; i++) {
+		htmlresults = htmlresults + "<li>" + postsArray[i][0] + ' || ' + postsArray[i][1] + postsArray[i][2] + "</li>";
+	}
+	//console.log(htmlresults);
+	$('#sorted').html(htmlresults);
+	$('.waiting').hide();
+}
+
+
+$(document).ready(function() {
+	$('.del').click(function() {
+		$(this).parent().remove();
+	});
+});
+
+ </script>
+	
+	<p>I started playing with the WordPress API using ideas from <a href="http://bionicteaching.com/api-nirvana-functional-details/">API Nirvana – Functional Details – Bionic Teaching</a>, then I remembered CogDog's WordPress search javascript.</p>
+ </body>
+</html>
