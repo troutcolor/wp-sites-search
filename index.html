@@ -68,7 +68,9 @@ document.getElementById("search")
 });
 
 
+/*
 var htmlresults = "";
+*/
 var thecount = 0;
 var blogcount;
 var postsArray = new Array;
@@ -90,7 +92,7 @@ var searchBlogList = function() {
 		//console.log(thisBlog[0]);
 		u = thisBlog[0] + '/wp-json/wp/v2/posts/?search=' + searchterm;
 		//console.log(u);
-		searchPosts(u, thisBlog[1], 12);
+		searchPosts(u, thisBlog[1]);
 
 	}
 
@@ -106,7 +108,7 @@ var addtolist = function() {
 
 }
 
-var searchPosts = function(theurl, el, count) {
+var searchPosts = function(theurl, el) {
 	//$(el).append('<img src="spinner-2x.gif" class="waiting">');
 	$.ajax({
 		url: theurl,
@@ -127,8 +129,7 @@ var searchPosts = function(theurl, el, count) {
 					newitem[2] = el;
 					postsArray.push(newitem);
 
-					if (index == count) return false; //only display 10 items
-
+ 
 				}); //each
 				$(el).find('.waiting').hide();
 				thecount++;
@@ -157,7 +158,7 @@ function sortFunction(a, b) {
 
 
 var sortsearch = function() {
-	htmlresults = "";
+	var htmlresults = "";
 	postsArray.sort(sortFunction);
 	for (var i = 0; i < postsArray.length; i++) {
 		htmlresults = htmlresults + "<li>" + postsArray[i][0] + ' || ' + postsArray[i][1] + postsArray[i][2] + "</li>";
