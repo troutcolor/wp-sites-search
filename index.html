@@ -28,11 +28,11 @@
 		
 	
 	<h1>Multi WP Blog Search</h1>
-	<p><a href="https://github.com/troutcolor/wp-sites-search">troutcolor/wp-sites-search: This is a quick test of the WP REST API searching across multiple blogs</a></p>
-		<p>I started playing with the WordPress API using ideas from <a href="http://bionicteaching.com/api-nirvana-functional-details/">API Nirvana – Functional Details – Bionic Teaching</a>, then I remembered CogDog's WordPress search javascript bookmarklet.</p>
+	<p><a href="https://github.com/troutcolor/wp-sites-search">wp-sites-search - github</a></p>
+		<p>I started playing with the WordPress API using ideas from <a href="http://bionicteaching.com/api-nirvana-functional-details/">API Nirvana – Functional Details</a>, then I remembered CogDog's <a href="http://cogdogblog.com/code/wp_search_maker.php" title="Make A WordPress Search Bookmarklet">WordPress search javascript bookmarklet</a>.</p>
 	
 <p>This is a quick test of the <a href="http://v2.wp-api.org/">WP REST API</a> searching across multiple blogs.</p>
-<p>There is little in the way of error checking....</p>
+<p>There is little in the way of error checking...</p>
 <p>You can't have mixed content, I needed to set up a custom domain for github pages which are severed via http, as the blogs that are loaded are http.(took me a while to figure out this but newer github pages seem to demand https unless using a custom domain)</p>
 
 <h2>Blogs to Search</h2>
@@ -78,6 +78,7 @@ var blogcount;
 var postsArray = new Array;
 
 var searchBlogList = function() {
+	$('#errors').html('');
 	postsArray.length = 0;
 
 	$('#sorted').html('');
@@ -141,7 +142,7 @@ var searchPosts = function(theurl, el) {
 			,
 		error: function(xhr, ajaxOptions, thrownError) {
 			$('#errors').append(el + " FAIL " + thrownError + '<br>');
-			console.log("xhr "+xhr);
+			console.log("xhr.responseText "+xhr.responseText);
 			console.log("ajaxOptions "+ajaxOptions);
 			console.log("thrownError "+thrownError);
 			blogcount = blogcount - 1;
