@@ -10,9 +10,11 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
 
-
    <style type="text/css" media="screen">
-   body{font-family: Helvetica, "MS Trebuchet", sans-serif;}
+   body{font-family: Helvetica, "MS Trebuchet", sans-serif;text-align:center;background: url('https://c2.staticflickr.com/8/7782/17530637049_2b9b12efa0_o.jpg')no-repeat center center fixed;background-size:cover;padding:0px;margin:0px;}
+   #main{text-align:left;width:720px;margin:0px auto;background:#fff;padding:0px 10px;opacity: 0.8;
+   -moz-opacity: 0.8;
+      filter:alpha(opacity=80);}
    #sorted{padding:10px;}
    #sorted li{padding:10px;margin-left:3em;}
 	 
@@ -21,8 +23,10 @@
 </head>
 
 <body>
+	<div id="main">
+		
 	
-	<h1>Multi WP Blog search</h1>
+	<h1>Multi WP Blog Search</h1>
 	<p><a href="https://github.com/troutcolor/wp-sites-search">troutcolor/wp-sites-search: This is a quick test of the WP REST API searching across multiple blogs</a></p>
 		<p>I started playing with the WordPress API using ideas from <a href="http://bionicteaching.com/api-nirvana-functional-details/">API Nirvana – Functional Details – Bionic Teaching</a>, then I remembered CogDog's WordPress search javascript bokmarklet.</p>
 	
@@ -55,7 +59,7 @@
 	</ul>
 </div>
 	
- 
+ </div>
  
 <script type="text/javascript">
 
@@ -68,9 +72,6 @@ document.getElementById("search")
 });
 
 
-/*
-var htmlresults = "";
-*/
 var thecount = 0;
 var blogcount;
 var postsArray = new Array;
@@ -109,7 +110,6 @@ var addtolist = function() {
 }
 
 var searchPosts = function(theurl, el) {
-	//$(el).append('<img src="spinner-2x.gif" class="waiting">');
 	$.ajax({
 		url: theurl,
 
@@ -121,8 +121,7 @@ var searchPosts = function(theurl, el) {
 
 				console.log(data); //dumps the data 
 
-				$.each(data, function(index, item) {
-					// $(el).append('<a  href="' + item.link + '">' +item.title.rendered +'</a> || ' +item.date.substring(0,10) +'<br>');      
+				$.each(data, function(index, item) {     
 					var newitem = new Array;
 					newitem[0] = '<a  href="' + item.link + '">' + item.title.rendered + '</a>';
 					newitem[1] = item.date.substring(0, 10);
