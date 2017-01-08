@@ -15,7 +15,9 @@
    h1 {margin:0px;padding:10px;}
    #main{text-align:left;width:720px;margin:0px auto;background:#fff;padding:0px 10px;opacity: 0.8;
    -moz-opacity: 0.8;
-      filter:alpha(opacity=80);}
+      filter:alpha(opacity=80);
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  }
    #sorted{padding:10px;}
    #sorted li{padding:10px;margin-left:3em;}
    #bloglist{width:400px; list-style: none;}
@@ -169,13 +171,14 @@ var sortsearch = function() {
 	$('.waiting').hide();
 }
 
-var addtolist=function(){
-	var tempA =[$('#addurl').val(), $('#addblogname').val()];
-bloglist.push(tempA);
-showbloglist(bloglist);
-$('#addurl').val('');
-$('#addblogname').val('');
+var addtolist = function() {
+	var tempA = [$('#addurl').val(), $('#addblogname').val()];
+	bloglist.push(tempA);
+	showbloglist(bloglist);
+	$('#addurl').val('');
+	$('#addblogname').val('');
 }
+
 
 var showbloglist=function(bloglist){
 	
@@ -193,8 +196,7 @@ var rem = function(i){
 
 $(document).ready(function() {
 	var tempA =["http://johnjohnston.info/blog", "john"] 
-	bloglist.push(tempA);
-	
+	bloglist.push(tempA);	
 	var tempA =["http://bionicteaching.com", "bionicteaching"];
 	bloglist.push(tempA);
 	var tempA =["http://cogdogblog.com", "cogdogblog"];
