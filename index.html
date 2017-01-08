@@ -18,7 +18,12 @@
       filter:alpha(opacity=80);}
    #sorted{padding:10px;}
    #sorted li{padding:10px;margin-left:3em;}
-	 
+   #bloglist{width:400px; list-style: none;}
+
+   #bloglist li{padding: 2px ;border:solid 1px lightgrey;margin:1px;}
+   #bloglist li:nth-child(even) {background: #CCC}
+   #bloglist li button{float:right;}
+   
    </style>
    
 </head>
@@ -37,13 +42,11 @@
 
 <h2>Blogs to Search</h2>
 <p>This is a bit messy, you can delete these blogs and add other ones. The blogs need to support the WP rest API and cross domain access (<strong>I think</strong>). </p> 
-<ul id="bloglist">
-	<li>http://johnjohnston.info/blog, john, <button class="del">delete</button></li>
-	<li>http://bionicteaching.com, bionicteaching, <button class="del">delete</button></li>
-	<li>http://cogdogblog.com, cogdogblog , <button class="del">delete</button></li>
+	<ul id="bloglist">
+		
 	</ul>
 	add URL: <input type="text" name="addurl" value="" id="addurl"> Name:<input type="text" name="addblogname" value="" id="addblogname"> <button onclick="addtolist();">add</button>
-
+	
 <h2>Search</h2>
 
 <div id="searchbox">
@@ -79,6 +82,7 @@ document.getElementById("search")
     }
 });
 
+var bloglist= new Array;
 
 var thecount = 0;
 var blogcount;
@@ -92,31 +96,20 @@ var searchBlogList = function() {
 	var searchterm = $('#search').val();
 	$('#posts').append('<img src="spinner-2x.gif" class="waiting">');
 	thecount = 0;
-	var optionTexts = [];
-	$("#bloglist li").each(function() {
-		optionTexts.push($(this).text())
-	});
-	blogcount = optionTexts.length;
-	for (var i = 0; i < optionTexts.length; i++) {
-		var thisBlog = optionTexts[i].split(',');
-		//console.log(thisBlog[0]);
-		u = thisBlog[0] + '/wp-json/wp/v2/posts/?search=' + searchterm+'&per_page='+$('#per_page').val();;
+	 
+	blogcount = bloglist.length;
+	for (var i = 0; i < bloglist.length; i++) {
+		 
+		u = bloglist[i][0] + '/wp-json/wp/v2/posts/?search=' + searchterm+'&per_page='+$('#per_page').val();;
 		//console.log(u);
-		searchPosts(u, thisBlog[1]);
+		searchPosts(u, bloglist[i][1]);
 
 	}
 
 
 }
 
-var addtolist = function() {
-	var u = $('#addurl').val();
-	var n = $('#addblogname').val();
-	var a = $("#bloglist").append("<li>" + u + "," + n + "</li>");
-	$('#addurl').val("");
-	$('#addblogname').val("");
-
-}
+ 
 
 var searchPosts = function(theurl, el) {
 	$.ajax({
@@ -169,18 +162,46 @@ var sortsearch = function() {
 	var htmlresults = "";
 	postsArray.sort(sortFunction);
 	for (var i = 0; i < postsArray.length; i++) {
-		htmlresults = htmlresults + "<li>" + postsArray[i][0] + ' || ' + postsArray[i][1] + postsArray[i][2] + "</li>";
+		htmlresults = htmlresults + "<li>" + postsArray[i][0] + ' || ' + postsArray[i][1] +" " + postsArray[i][2] + "</li>";
 	}
 	//console.log(htmlresults);
 	$('#sorted').html(htmlresults);
 	$('.waiting').hide();
 }
 
+var addtolist=function(){
+	var tempA =[$('#addurl').val(), $('#addblogname').val()];
+bloglist.push(tempA);
+showbloglist(bloglist);
+$('#addurl').val('');
+$('#addblogname').val('');
+}
+
+var showbloglist=function(bloglist){
+	
+	var t="";
+	for (var i = 0; i < bloglist.length; i++) {
+		t=t+ "<li>"+ bloglist[i][0]+" - "+bloglist[i][1]+ " <button onclick='rem("+i+")'>X</button></li>"
+	}
+	$('#bloglist').html(t);
+}
+
+var rem = function(i){
+   bloglist.splice(i,1);
+   showbloglist(bloglist);
+}
 
 $(document).ready(function() {
-	$('.del').click(function() {
-		$(this).parent().remove();
-	});
+	var tempA =["http://johnjohnston.info/blog", "john"] 
+	bloglist.push(tempA);
+	
+	var tempA =["http://bionicteaching.com", "bionicteaching"];
+	bloglist.push(tempA);
+	var tempA =["http://cogdogblog.com", "cogdogblog"];
+	bloglist.push(tempA);
+	
+	showbloglist(bloglist);
+	
 	
   if(window.location.hash) {
         var hash = window.location.hash.substring(1);
