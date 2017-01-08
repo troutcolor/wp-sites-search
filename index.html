@@ -47,6 +47,13 @@
 <h2>Search</h2>
 
 <div id="searchbox">
+	Max search results per blog: <select name="per_page" id="per_page"  onchange="" size="1">
+		<option value="2">2</option>
+		<option selected value="10">10</option>
+		<option value="20">20</option>
+		<option value="30">30</option>
+		<option value="50">50</option>
+	</select>
 	<input type="text" name="search" value="" id="search"> <button id="searchbutton" onclick="searchBlogList();">Search</button>
 </div>
 <div id="posts" class="postholder">
@@ -93,7 +100,7 @@ var searchBlogList = function() {
 	for (var i = 0; i < optionTexts.length; i++) {
 		var thisBlog = optionTexts[i].split(',');
 		//console.log(thisBlog[0]);
-		u = thisBlog[0] + '/wp-json/wp/v2/posts/?search=' + searchterm;
+		u = thisBlog[0] + '/wp-json/wp/v2/posts/?search=' + searchterm+'&per_page='+$('#per_page').val();;
 		//console.log(u);
 		searchPosts(u, thisBlog[1]);
 
